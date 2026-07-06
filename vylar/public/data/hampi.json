@@ -1,0 +1,131 @@
+{
+  "id": "hampi",
+  "name": "Hampi — Vijayanagara",
+  "center": { "lat": 15.335, "lng": 76.462 },
+  "radiusM": 6000,
+  "intro": "You are standing in Hampi, the ruined capital of the Vijayanagara Empire. Founded in 1336 by the brothers Harihara and Bukka, by the early 1500s this was one of the largest and richest cities on Earth — foreign travellers wrote that its markets overflowed with diamonds, silk, and horses. In 1565, after the Battle of Talikota, the city was sacked and abandoned. What remains, scattered among granite boulders on the banks of the Tungabhadra river, is a UNESCO World Heritage Site.",
+  "pois": [
+    {
+      "id": "virupaksha",
+      "name": "Virupaksha Temple",
+      "lat": 15.3352,
+      "lng": 76.4583,
+      "era": "Origins ~7th century CE; great gopuram 15th–16th century",
+      "short": "The living heart of Hampi — a Shiva temple in continuous worship for over a thousand years.",
+      "narration": "This is the Virupaksha Temple, dedicated to a local form of Shiva, and it is the one part of Hampi that never died. Worship here predates the Vijayanagara Empire by centuries — inscriptions suggest a shrine stood on this spot as early as the 7th century. The empire's kings, especially Krishnadevaraya in the early 1500s, wrapped it in courtyards, pillared halls, and the towering eastern gopuram that rises about fifty metres above the bazaar street. When the city was sacked in 1565, this temple alone continued its rituals. Step inside and you are not visiting a ruin — you are visiting a working temple older than most nations.",
+      "facts": [
+        "A small dark chamber inside acts as a natural pinhole camera, projecting an inverted image of the great gopuram onto its wall.",
+        "Krishnadevaraya's coronation in 1510 is associated with major additions to the temple, including a pillared hall.",
+        "The temple remained in active worship even after the city fell in 1565 — it never became a ruin."
+      ],
+      "qa": [
+        { "q": ["who", "built", "virupaksha"], "a": "The temple grew over centuries: a shrine existed here from around the 7th century, and Vijayanagara rulers — most famously Krishnadevaraya in the early 1500s — expanded it into the complex you see, including the great eastern gopuram." },
+        { "q": ["shadow", "pinhole", "inverted", "camera"], "a": "A chamber behind the inner sanctum has a narrow slit that works as a natural pinhole camera: it projects an upside-down image of the 50-metre gopuram onto the wall — a piece of optics built in stone." },
+        { "q": ["still", "worship", "active", "open"], "a": "Yes — Virupaksha is a living temple. Daily rituals have continued here for over a thousand years, straight through the fall of the empire in 1565." }
+      ]
+    },
+    {
+      "id": "bazaar",
+      "name": "Hampi Bazaar",
+      "lat": 15.335,
+      "lng": 76.462,
+      "era": "15th–16th century",
+      "short": "A kilometre-long market street where travellers wrote that gems were sold in open heaps.",
+      "narration": "The long colonnaded street stretching east from the Virupaksha Temple is the Hampi Bazaar. In the empire's golden years this was one of the great marketplaces of Asia. The Portuguese traveller Domingo Paes, who visited around 1520, described streets where merchants traded rubies, diamonds, pearls, silks, and horses imported through the ports of the west coast. The stone colonnades you see on either side were shopfronts and merchant quarters. Imagine this dusty avenue packed with traders from Persia, Portugal, and China, cartloads of cotton and spice, and temple processions pushing through the crowd.",
+      "facts": [
+        "The bazaar street runs roughly one kilometre east from the Virupaksha Temple gopuram.",
+        "Foreign visitors like Domingo Paes (c. 1520) and Abdur Razzaq (1440s) left detailed eyewitness accounts of Vijayanagara's markets.",
+        "War horses were among the empire's most prized imports, traded through Portuguese-controlled ports."
+      ],
+      "qa": [
+        { "q": ["what", "sold", "market", "trade"], "a": "Eyewitnesses describe gems — rubies, diamonds, pearls — plus silk, cotton, spices, and above all imported war horses. Paes wrote that the bazaars were 'the best provided city in the world'." }
+      ]
+    },
+    {
+      "id": "hemakuta",
+      "name": "Hemakuta Hill",
+      "lat": 15.3339,
+      "lng": 76.4585,
+      "era": "9th–14th century (pre-Vijayanagara shrines)",
+      "short": "A granite hill scattered with shrines older than the empire itself — and Hampi's favourite sunset point.",
+      "narration": "Hemakuta Hill rises just south of the Virupaksha Temple, its bare granite sheet dotted with dozens of small stone shrines. Most of these predate the Vijayanagara Empire — some go back to the 9th and 10th centuries — which makes this hill a window into the sacred landscape that existed before the imperial city was ever built. Legend holds that Shiva performed penance here before his marriage to the local goddess Pampa, and that the hill rained gold — hema — giving it its name. Climb it in the late afternoon: the view over the temple, the bazaar, and the boulder fields at sunset explains why pilgrims chose this place.",
+      "facts": [
+        "Many shrines here are pre-Vijayanagara, built between the 9th and 14th centuries.",
+        "The name comes from 'hema', Sanskrit for gold — legend says the hill once rained gold.",
+        "The hill is one of the best vantage points to understand the layout of the sacred centre."
+      ],
+      "qa": [
+        { "q": ["sunset", "view", "climb"], "a": "Yes — Hemakuta is Hampi's classic sunset spot. The climb is short and the view takes in the Virupaksha gopuram, the bazaar street, and the boulder landscape." }
+      ]
+    },
+    {
+      "id": "vittala",
+      "name": "Vittala Temple & Stone Chariot",
+      "lat": 15.3423,
+      "lng": 76.4754,
+      "era": "15th–16th century",
+      "short": "The masterpiece of Vijayanagara art — home of the iconic Stone Chariot and the musical pillars.",
+      "narration": "The Vittala Temple is where Vijayanagara's sculptors showed everything they could do. Built and expanded through the 15th and early 16th centuries and dedicated to Vitthala, a form of Vishnu, it was likely never even consecrated for regular worship — it reads as a statement of imperial splendour. In the courtyard stands the Stone Chariot, actually a shrine to Garuda carved as a processional cart, its stone wheels once able to turn. The main hall's slender granite colonnettes are the famous 'musical pillars', which ring at different pitches when struck. This is the image on India's fifty-rupee note, and the finest single monument the empire left behind.",
+      "facts": [
+        "The Stone Chariot is a Garuda shrine carved in granite; its wheels were once capable of rotating.",
+        "The so-called musical pillars — slim colonnettes cut from single granite blocks — produce distinct tones when tapped. Tapping them is now prohibited to protect them.",
+        "The Stone Chariot appears on the Indian ₹50 banknote."
+      ],
+      "qa": [
+        { "q": ["chariot", "stone", "wheels"], "a": "The Stone Chariot is a shrine to Garuda, Vishnu's eagle mount, carved as a temple cart. Its granite wheels were once able to rotate on their axles; they've since been fixed to protect the monument." },
+        { "q": ["musical", "pillars", "sound", "sa", "re", "ga"], "a": "The main hall's slender granite colonnettes ring at different pitches when struck — supposedly mimicking instruments. Visitors are no longer allowed to tap them, to prevent damage." }
+      ]
+    },
+    {
+      "id": "lotus_mahal",
+      "name": "Lotus Mahal",
+      "lat": 15.3312,
+      "lng": 76.4707,
+      "era": "15th–16th century",
+      "short": "An elegant two-storey pavilion blending Hindu and Islamic architecture, inside the royal women's enclosure.",
+      "narration": "The Lotus Mahal stands inside the Zenana enclosure, the walled quarter associated with the royal household's women. It is one of the few structures in Hampi that survived the sack of 1565 nearly intact, and it is unlike anything else here: recessed archways in the Indo-Islamic style, stacked in symmetric tiers that open like petals — hence the name. The blend is deliberate. Vijayanagara's rulers fought the Deccan sultanates for two centuries, yet freely borrowed their architects' vocabulary for palace buildings, reserving pure temple styles for the gods. The walls even carried plaster and, likely, cooling water channels — a pleasure pavilion built for the hottest months.",
+      "facts": [
+        "The building combines a Hindu temple-style base with Islamic-style cusped arches — a signature 'Vijayanagara courtly' blend.",
+        "It sits in the Zenana enclosure, traditionally described as the secured quarter of the royal women.",
+        "It is among the least damaged structures in the royal centre."
+      ],
+      "qa": [
+        { "q": ["why", "name", "lotus"], "a": "Its stacked, cusped archways and the domed tower rising in tiers are said to resemble an opening lotus bud — the name is modern, given for the shape." }
+      ]
+    },
+    {
+      "id": "elephant_stables",
+      "name": "Elephant Stables",
+      "lat": 15.332,
+      "lng": 76.4718,
+      "era": "15th–16th century",
+      "short": "Eleven domed chambers that housed the royal war elephants of the empire.",
+      "narration": "This long, dignified building with eleven domed chambers housed the state elephants of the Vijayanagara kings. Each chamber, tall enough for an elephant and its riders, opens through a grand arch; the domes alternate in style — fluted, ribbed, octagonal — again in the Indo-Islamic manner the court favoured for secular buildings. War elephants were central to the empire's army and its ceremony: eyewitness accounts of the Mahanavami festival describe hundreds of elephants in procession, armoured and painted. The building's survival, nearly untouched by the destruction of 1565, makes it one of the best places in Hampi to feel the scale of royal life.",
+      "facts": [
+        "There are eleven chambers, each crowned by a dome of a different design.",
+        "A central upper pavilion may have held musicians during processions.",
+        "It is one of the least damaged royal structures in Hampi."
+      ],
+      "qa": [
+        { "q": ["how", "many", "elephants", "chambers"], "a": "Eleven domed chambers, each large enough to house a royal elephant. The domes alternate between fluted, ribbed, and octagonal designs." }
+      ]
+    },
+    {
+      "id": "mahanavami",
+      "name": "Mahanavami Dibba",
+      "lat": 15.3288,
+      "lng": 76.4677,
+      "era": "14th–16th century, enlarged in stages",
+      "short": "The great ceremonial platform where the king reviewed armies and festivals — described in awe by foreign visitors.",
+      "narration": "This towering granite platform, the Mahanavami Dibba, was the ceremonial heart of the Royal Enclosure. From its top, the king presided over the nine-day Mahanavami festival — the ancestor of today's Dasara — reviewing processions of elephants, cavalry, wrestlers, and dancers. Domingo Paes watched the spectacle around 1520 and struggled to find words for the scale of it. Walk around the base: the relief carvings show lines of horses with foreign traders, hunting scenes, dancers, and musicians — a stone documentary of court life. The wooden pavilions that once crowned the platform are gone, but the carved base preserves the parade in miniature.",
+      "facts": [
+        "The platform was enlarged in stages; its base carries friezes of elephants, horses, dancers, and foreign traders.",
+        "Portuguese visitor Domingo Paes described the Mahanavami festival here in vivid detail around 1520.",
+        "Wooden superstructures once stood on top and have not survived."
+      ],
+      "qa": [
+        { "q": ["festival", "mahanavami", "dasara", "celebrated"], "a": "The Mahanavami — nine nights, ancestor of today's Dasara — was celebrated here with processions of elephants and cavalry, wrestling, music, and dance, all reviewed by the king from the top of this platform." }
+      ]
+    }
+  ]
+}

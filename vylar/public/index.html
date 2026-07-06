@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#0b0a08" />
+  <title>Vylar — the world as a living museum</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%23d9a441'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='17' font-family='sans-serif' font-weight='bold' fill='%23241a08'%3EV%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <!-- Start screen -->
+  <section id="start-screen">
+    <div class="brand">
+      <h1>VYLAR</h1>
+      <p class="tagline">Point your phone at history and watch it come alive.</p>
+    </div>
+    <div class="start-card">
+      <h2 id="start-site-name">Loading site…</h2>
+      <p id="start-site-desc"></p>
+      <button id="btn-live" class="primary">Start exploring (live AR)</button>
+      <button id="btn-demo" class="secondary">Demo tour — no GPS needed</button>
+      <p class="hint">Live AR needs camera, location, and motion permissions. The demo tour simulates a walk through the site.</p>
+    </div>
+  </section>
+
+  <!-- AR view -->
+  <section id="ar-view" hidden>
+    <video id="camera" autoplay muted playsinline></video>
+    <div id="demo-scene" hidden>
+      <div class="panorama"></div>
+      <div class="ground"></div>
+    </div>
+
+    <div id="hotspot-layer"></div>
+    <div id="edge-left" class="edge" hidden><span class="arrow">‹</span><span class="edge-label"></span></div>
+    <div id="edge-right" class="edge" hidden><span class="edge-label"></span><span class="arrow">›</span></div>
+
+    <header id="hud">
+      <div id="site-banner">
+        <div id="banner-title">Locating…</div>
+        <div id="banner-sub"></div>
+      </div>
+    </header>
+
+    <footer id="controls">
+      <button id="btn-narrate" title="Toggle voice narration">🔊</button>
+      <button id="btn-identify" title="Identify what the camera sees">Identify 📷</button>
+      <button id="btn-next" hidden>Walk to next site →</button>
+    </footer>
+  </section>
+
+  <!-- POI bottom sheet -->
+  <section id="sheet" hidden>
+    <button id="sheet-close" aria-label="Close">✕</button>
+    <h2 id="sheet-title"></h2>
+    <p id="sheet-era" class="era"></p>
+    <p id="sheet-narration"></p>
+    <ul id="sheet-facts"></ul>
+    <form id="ask-form">
+      <input id="ask-input" type="text" placeholder="Ask Vylar anything about this place…" autocomplete="off" />
+      <button type="submit">Ask</button>
+    </form>
+    <div id="ask-answer" hidden></div>
+  </section>
+
+  <!-- Identify result toast -->
+  <div id="toast" hidden></div>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
