@@ -58,9 +58,24 @@ Design decisions worth knowing:
 - **Site packs are data.** Everything Hampi-specific lives in one JSON file, so
   the same app serves any site.
 
-## Roadmap from here (per the product vision)
+## Phase 2 & 3 features (also in this prototype)
 
-- Phase 2: full 3D monument overlays (Unity + AR Foundation + VPS), historical
-  character interactions, guided tours.
-- Phase 3: multiplayer/shared tours, live events, classroom mode.
-- Phase 4: AR glasses, city-scale persistent AR.
+| Feature | Implementation |
+|---|---|
+| Time Travel mode (Phase 2) | 🕰 toggle switches Present ↔ c. 1520 CE: era-tinted view + per-monument "as it was" descriptions from the site pack |
+| Historical characters (Phase 2) | Talk to Krishnadevaraya, Domingo Paes, or Chenna the sculptor — persona-grounded Claude roleplay via `/api/character`, honest about being AI portrayals and about fictional composites |
+| Guided AR tours (Phase 2) | 🧭 tour engine sequences all monuments with narration; gives distance/direction in live mode, walks you there in demo mode |
+| Shared group tours (Phase 3) | 👥 create/join a room code; see companions as blue markers in AR (SSE presence), followers auto-follow the leader's tour stops |
+| Treasure hunt / classroom (Phase 3) | 🏺 arrive at monuments, answer relic challenges, collect the full set (persists in localStorage) |
+| AR glasses readiness (Phase 4) | WebXR `immersive-ar` detection on the start screen; full architecture in `docs/PHASE4.md` |
+
+## What Phase 2–4 need beyond this prototype
+
+- **Full 3D monument overlays** (the heart of Phase 2) require a native Unity +
+  AR Foundation client with visual positioning (ARCore Geospatial API /
+  Lightship VPS) and per-site 3D reconstruction content — a content-production
+  effort, not just code. This prototype implements the interaction layer
+  (time toggle, tours, characters) that the 3D layer plugs into.
+- **Phase 3 at scale** needs a real-time backend (the in-memory SSE room server
+  here is the reference behavior for it).
+- **Phase 4** is hardware-gated — see `docs/PHASE4.md`.

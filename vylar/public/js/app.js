@@ -1,7 +1,10 @@
-import { distanceM, bearingDeg, bearingDelta, formatDistance, compassPoint } from "./geo.js";
+import { distanceM, bearingDeg, formatDistance, compassPoint } from "./geo.js";
 import { LiveSensors, DemoSensors } from "./sensors.js";
 import { ARView } from "./ar.js";
 import { Narrator } from "./narrator.js";
+import { CharacterChat } from "./characters.js";
+import { GroupTour } from "./rooms.js";
+import { TreasureHunt } from "./hunt.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -10,7 +13,14 @@ const state = {
   sensors: null,
   ar: null,
   narrator: new Narrator(),
+  chat: null,
+  group: null,
+  hunt: null,
+  members: [],
   announcedPoi: null,
+  nearestPoi: null,
+  pastMode: false,
+  tour: { active: false, index: -1 },
   lastFrame: performance.now(),
 };
 
@@ -18,6 +28,19 @@ async function init() {
   state.site = await (await fetch("/data/hampi.json")).json();
   $("start-site-name").textContent = state.site.name;
   $("start-site-desc").textContent = state.site.intro.split(". ").slice(0, 2).join(". ") + ".";
+
+  // Phase 4 readiness: report WebXR immersive-ar capability (AR glasses /
+  // XR browsers). The experience itself is phone-first for now.
+  if (navigator.xr?.isSessionSupported) {
+    try {
+      const ok = await navigator.xr.isSessionSupported("immersive-ar");
+      $("xr-status").textContent = ok
+        ? "✦ WebXR AR device detected — immersive mode available."
+        : "WebXR present, but no immersive-ar device — phone mode.";
+    } catch {
+      $("xr-status").textContent = "";
+    }
+  }
 
   $("btn-live").addEventListener("click", () => start("live"));
   $("btn-demo").addEventListener("click", () => start("demo"));
@@ -62,10 +85,23 @@ async function start(mode) {
     onTapPoi: openSheet,
   });
 
+  state.chat = new CharacterChat(state.site, state.narrator, () => $("sheet").dataset.poiId || null);
+  state.hunt = new TreasureHunt(state.site, toast, state.narrator);
+  state.group = new GroupTour({
+    getPosition: () => state.sensors?.position,
+    toast,
+    onRoster: (members) => (state.members = members),
+    onLeaderStop: (stopId) => {
+      const poi = state.site.pois.find((p) => p.id === stopId);
+      if (!poi) return;
+      toast(`Your guide moved on to ${poi.name}.`);
+      if (state.sensors.isDemo) walkDemoTo(poi);
+    },
+  });
+
   bindControls();
   requestAnimationFrame(frame);
 
-  // Welcome narration
   $("banner-title").textContent = state.site.name;
   $("banner-sub").textContent = state.sensors.isDemo
     ? "Demo tour — drag to look around"
@@ -80,7 +116,7 @@ function frame(now) {
   s.tick?.(dt);
 
   if (s.position) {
-    state.ar.render(state.site.pois, s.position, s.heading, s.pitch);
+    state.ar.render(state.site.pois, s.position, s.heading, s.pitch, state.members);
     updateBanner();
     if (s.isDemo) {
       document.querySelector("#demo-scene .panorama")
@@ -98,26 +134,100 @@ function updateBanner() {
     if (d < nearestDist) { nearest = poi; nearestDist = d; }
   }
   if (!nearest) return;
+  state.nearestPoi = nearestDist < 120 ? nearest : null;
+
+  const tourPrefix = state.tour.active
+    ? `Stop ${state.tour.index + 1}/${state.site.pois.length} · `
+    : "";
 
   if (nearestDist < 80) {
-    $("banner-title").textContent = nearest.name;
+    $("banner-title").textContent = tourPrefix + nearest.name;
     $("banner-sub").textContent = "You're here — tap the marker to explore";
     if (state.announcedPoi !== nearest.id) {
       state.announcedPoi = nearest.id;
       state.narrator.speak(`You've arrived at ${nearest.name}. ${nearest.short}`);
+      state.hunt.maybeChallenge(nearest);
     }
   } else {
     const brg = bearingDeg(s.position, nearest);
-    $("banner-title").textContent = state.site.name;
+    $("banner-title").textContent = tourPrefix + state.site.name;
     $("banner-sub").textContent =
       `Nearest: ${nearest.name} · ${formatDistance(nearestDist)} ${compassPoint(brg)}`;
   }
+
+  if (state.pastMode) updatePastCard(nearest, nearestDist);
 }
 
+/* ---------- Time travel (Phase 2) ---------- */
+function updatePastCard(nearest, dist) {
+  const text = dist < 400 && nearest.past
+    ? nearest.past
+    : "The young imperial city spreads along the river — temple spires, garden suburbs, and canals threading between the boulders.";
+  if ($("past-text").textContent !== text) $("past-text").textContent = text;
+}
+
+function toggleTime() {
+  state.pastMode = !state.pastMode;
+  $("ar-view").classList.toggle("past", state.pastMode);
+  $("btn-time").classList.toggle("active", state.pastMode);
+  $("past-card").hidden = !state.pastMode;
+  if (state.pastMode) {
+    const text = state.nearestPoi?.past ||
+      "You are looking at Vijayanagara at its height, around 1520 CE.";
+    $("past-text").textContent = text;
+    state.narrator.speak(`Travelling to the year 1520. ${text}`);
+  } else {
+    state.narrator.speak("Returning to the present day.");
+  }
+}
+
+/* ---------- Guided tour (Phase 2) ---------- */
+function toggleTour() {
+  state.tour.active = !state.tour.active;
+  $("btn-tour").classList.toggle("active", state.tour.active);
+  if (state.tour.active) {
+    state.tour.index = -1;
+    $("btn-next").hidden = false;
+    advanceTour();
+  } else {
+    $("btn-next").hidden = !state.sensors.isDemo;
+    toast("Guided tour ended.");
+  }
+}
+
+function advanceTour() {
+  const pois = state.site.pois;
+  state.tour.index = (state.tour.index + 1) % pois.length;
+  const poi = pois[state.tour.index];
+  state.announcedPoi = null;
+  state.group?.push(poi.id); // leaders broadcast the stop to their room
+
+  if (state.sensors.isDemo) {
+    walkDemoTo(poi);
+    toast(`Stop ${state.tour.index + 1} of ${pois.length}: walking to ${poi.name}…`);
+  } else {
+    const s = state.sensors;
+    const dist = formatDistance(distanceM(s.position, poi));
+    const dir = compassPoint(bearingDeg(s.position, poi));
+    toast(`Stop ${state.tour.index + 1} of ${pois.length}: ${poi.name} — ${dist} ${dir}. Follow the marker.`);
+    state.narrator.speak(`Next stop: ${poi.name}, ${dist} to the ${dir}.`);
+  }
+}
+
+function walkDemoTo(poi) {
+  const s = state.sensors;
+  if (!s.isDemo) return;
+  const idx = state.site.pois.findIndex((p) => p.id === poi.id);
+  s._stopIndex = (idx - 1 + state.site.pois.length) % state.site.pois.length;
+  s.nextStop();
+  state.announcedPoi = null;
+}
+
+/* ---------- POI sheet ---------- */
 function openSheet(poi) {
   $("sheet-title").textContent = poi.name;
   $("sheet-era").textContent = poi.era;
-  $("sheet-narration").textContent = poi.narration;
+  $("sheet-narration").textContent = state.pastMode && poi.past ? poi.past : poi.narration;
   const facts = $("sheet-facts");
   facts.innerHTML = "";
   for (const f of poi.facts || []) {
@@ -125,11 +235,13 @@ function openSheet(poi) {
     li.textContent = f;
     facts.appendChild(li);
   }
+  state.chat.renderButtons($("character-buttons"));
   $("ask-answer").hidden = true;
   $("ask-input").value = "";
   $("sheet").hidden = false;
   $("sheet").dataset.poiId = poi.id;
-  state.narrator.speak(poi.narration);
+  state.narrator.speak(state.pastMode && poi.past ? poi.past : poi.narration);
+  state.hunt.maybeChallenge(poi);
 }
 
 function bindControls() {
@@ -144,10 +256,17 @@ function bindControls() {
     e.currentTarget.textContent = on ? "🔊" : "🔇";
   });
 
+  $("btn-time").addEventListener("click", toggleTime);
+  $("btn-tour").addEventListener("click", toggleTour);
+
   $("btn-next").addEventListener("click", () => {
-    const poi = state.sensors.nextStop();
-    state.announcedPoi = null;
-    toast(`Walking to ${poi.name}…`);
+    if (state.tour.active) {
+      advanceTour();
+    } else if (state.sensors.isDemo) {
+      const poi = state.sensors.nextStop();
+      state.announcedPoi = null;
+      toast(`Walking to ${poi.name}…`);
+    }
   });
 
   $("btn-identify").addEventListener("click", identify);

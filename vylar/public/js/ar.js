@@ -1,6 +1,7 @@
-// Renders POI hotspots into screen space from GPS position + compass heading.
-// This is "geo-AR": world-anchored labels via bearing math, the Phase 1
-// approach (full 3D reconstruction anchoring is Phase 2 / VPS territory).
+// Renders POI hotspots (and group-member markers) into screen space from GPS
+// position + compass heading. This is "geo-AR": world-anchored labels via
+// bearing math, the Phase 1 approach (full 3D reconstruction anchoring is
+// Phase 2 / VPS territory).
 import { distanceM, bearingDeg, bearingDelta, formatDistance } from "./geo.js";
 
 const FOV = 62;            // horizontal degrees mapped across the viewport
@@ -15,38 +16,42 @@ export class ARView {
     this._els = new Map();
   }
 
-  _elFor(poi) {
-    let el = this._els.get(poi.id);
+  _elFor(key, label, target, isMember) {
+    let el = this._els.get(key);
     if (!el) {
       el = document.createElement("div");
-      el.className = "hotspot";
+      el.className = isMember ? "hotspot member" : "hotspot";
       el.innerHTML =
         `<div class="card"><div class="name"></div><div class="dist"></div></div><div class="pin"></div>`;
-      el.querySelector(".name").textContent = poi.name;
-      el.addEventListener("click", () => this.onTapPoi(poi));
+      if (!isMember) el.addEventListener("click", () => this.onTapPoi(target));
       this.layer.appendChild(el);
-      this._els.set(poi.id, el);
+      this._els.set(key, el);
     }
+    el.querySelector(".name").textContent = label;
     return el;
   }
 
-  render(pois, position, heading, pitch) {
+  render(pois, position, heading, pitch, members = []) {
     const w = this.layer.clientWidth;
     const h = this.layer.clientHeight;
     let offLeft = null, offRight = null;
+    const liveKeys = new Set();
 
-    for (const poi of pois) {
-      const el = this._elFor(poi);
-      const dist = distanceM(position, poi);
-      if (dist > MAX_RANGE_M) { el.style.display = "none"; continue; }
+    const place = (key, label, target, isMember) => {
+      liveKeys.add(key);
+      const el = this._elFor(key, label, target, isMember);
+      const dist = distanceM(position, target);
+      if (dist > MAX_RANGE_M) { el.style.display = "none"; return; }
 
-      const rel = bearingDelta(heading, bearingDeg(position, poi));
+      const rel = bearingDelta(heading, bearingDeg(position, target));
       if (Math.abs(rel) > FOV / 2 + 8) {
         el.style.display = "none";
-        const cand = { poi, dist, rel: Math.abs(rel) };
-        if (rel < 0) { if (!offLeft || dist < offLeft.dist) offLeft = cand; }
-        else { if (!offRight || dist < offRight.dist) offRight = cand; }
-        continue;
+        if (!isMember) {
+          const cand = { label, dist };
+          if (rel < 0) { if (!offLeft || dist < offLeft.dist) offLeft = cand; }
+          else { if (!offRight || dist < offRight.dist) offRight = cand; }
+        }
+        return;
       }
 
       const x = w / 2 + (rel / FOV) * w;
@@ -61,7 +66,18 @@ export class ARView {
       el.style.zIndex = String(1000 - Math.round(depth * 999));
       el.querySelector(".card").style.transform = `scale(${scale})`;
       el.querySelector(".dist").textContent = formatDistance(dist);
-      el.classList.toggle("near", dist < 80);
+      el.classList.toggle("near", !isMember && dist < 80);
+    };
+
+    for (const poi of pois) place(poi.id, poi.name, poi, false);
+    for (const m of members) place(`member:${m.id}`, m.name, m, true);
+
+    // Drop markers for members who left the room.
+    for (const [key, el] of this._els) {
+      if (key.startsWith("member:") && !liveKeys.has(key)) {
+        el.remove();
+        this._els.delete(key);
+      }
     }
 
     this._edge(this.edgeLeft, offLeft);
@@ -72,6 +88,6 @@ export class ARView {
     if (!cand) { el.hidden = true; return; }
     el.hidden = false;
     el.querySelector(".edge-label").textContent =
-      `${cand.poi.name} · ${formatDistance(cand.dist)}`;
+      `${cand.label} · ${formatDistance(cand.dist)}`;
   }
 }

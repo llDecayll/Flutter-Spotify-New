@@ -1,8 +1,40 @@
 {
   "id": "hampi",
   "name": "Hampi — Vijayanagara",
-  "center": { "lat": 15.335, "lng": 76.462 },
+  "center": {
+    "lat": 15.335,
+    "lng": 76.462
+  },
   "radiusM": 6000,
+  "characters": [
+    {
+      "id": "krishnadevaraya",
+      "name": "Krishnadevaraya",
+      "role": "Emperor of Vijayanagara (r. 1509–1529)",
+      "fictional": false,
+      "greeting": "You stand in my city, traveller. Ask what you will — of war, of temples, of poetry. I have time before the evening court.",
+      "persona": "The greatest ruler of the Vijayanagara Empire at its peak. Regal but curious, proud of his capital, his military victories (Raichur, Orissa campaigns), his patronage of temples including Virupaksha and Vittala, and his own Telugu poem Amuktamalyada. Speaks with warmth to visitors, occasionally teases. Knows nothing after 1529.",
+      "offline": "The emperor inclines his head. \"My archivists are absent today — walk the bazaar and the great temple, and we shall speak when they return.\""
+    },
+    {
+      "id": "paes",
+      "name": "Domingo Paes",
+      "role": "Portuguese traveller, visited c. 1520",
+      "fictional": false,
+      "greeting": "Friend! I have travelled from Goa with the horse traders, and I tell you — I have seen Rome, and this city is greater. What do you wish to know?",
+      "persona": "A Portuguese visitor whose chronicle is a key eyewitness source on Vijayanagara. An outsider's astonished perspective: the size of the city, the markets, the Mahanavami festival, the irrigation and roses. Practical, vivid, a little breathless. Knows nothing after the early 1520s and sees things through 16th-century Portuguese eyes.",
+      "offline": "Paes pats his satchel. \"My notes are with the caravan. Come find me by the bazaar later, friend.\""
+    },
+    {
+      "id": "chenna",
+      "name": "Chenna the sculptor",
+      "role": "Master carver of the Vittala workshop (composite character)",
+      "fictional": true,
+      "greeting": "Mind the dust — we are dressing granite today. You want to know how the pillars sing? Sit, watch the chisels.",
+      "persona": "A fictional composite master sculptor representing the anonymous artisans of the Vittala temple workshops. Speaks about craft: quarrying granite by heat and wedges, carving colonnettes that ring at different pitches, guild life, wages, patrons. Humble, wry, proud of the work. Always honest that individual carvers' names are mostly lost to history.",
+      "offline": "Chenna waves you off gently. \"The kiln is lit and I cannot talk now. Ask the stones — they answer if you look closely.\""
+    }
+  ],
   "intro": "You are standing in Hampi, the ruined capital of the Vijayanagara Empire. Founded in 1336 by the brothers Harihara and Bukka, by the early 1500s this was one of the largest and richest cities on Earth — foreign travellers wrote that its markets overflowed with diamonds, silk, and horses. In 1565, after the Battle of Talikota, the city was sacked and abandoned. What remains, scattered among granite boulders on the banks of the Tungabhadra river, is a UNESCO World Heritage Site.",
   "pois": [
     {
@@ -19,10 +51,44 @@
         "The temple remained in active worship even after the city fell in 1565 — it never became a ruin."
       ],
       "qa": [
-        { "q": ["who", "built", "virupaksha"], "a": "The temple grew over centuries: a shrine existed here from around the 7th century, and Vijayanagara rulers — most famously Krishnadevaraya in the early 1500s — expanded it into the complex you see, including the great eastern gopuram." },
-        { "q": ["shadow", "pinhole", "inverted", "camera"], "a": "A chamber behind the inner sanctum has a narrow slit that works as a natural pinhole camera: it projects an upside-down image of the 50-metre gopuram onto the wall — a piece of optics built in stone." },
-        { "q": ["still", "worship", "active", "open"], "a": "Yes — Virupaksha is a living temple. Daily rituals have continued here for over a thousand years, straight through the fall of the empire in 1565." }
-      ]
+        {
+          "q": [
+            "who",
+            "built",
+            "virupaksha"
+          ],
+          "a": "The temple grew over centuries: a shrine existed here from around the 7th century, and Vijayanagara rulers — most famously Krishnadevaraya in the early 1500s — expanded it into the complex you see, including the great eastern gopuram."
+        },
+        {
+          "q": [
+            "shadow",
+            "pinhole",
+            "inverted",
+            "camera"
+          ],
+          "a": "A chamber behind the inner sanctum has a narrow slit that works as a natural pinhole camera: it projects an upside-down image of the 50-metre gopuram onto the wall — a piece of optics built in stone."
+        },
+        {
+          "q": [
+            "still",
+            "worship",
+            "active",
+            "open"
+          ],
+          "a": "Yes — Virupaksha is a living temple. Daily rituals have continued here for over a thousand years, straight through the fall of the empire in 1565."
+        }
+      ],
+      "past": "In 1520 the gopuram gleams with fresh white plaster and painted stucco gods. Temple elephants sway in the outer court, priests stream between pillared halls hung with silk, and the sound of drums carries down the bazaar for the evening procession.",
+      "quiz": {
+        "question": "What natural optical trick is hidden inside the temple?",
+        "options": [
+          "A whispering gallery",
+          "A pinhole projects the gopuram upside-down",
+          "A floating pillar",
+          "A mirror of polished gold"
+        ],
+        "answer": 1
+      }
     },
     {
       "id": "bazaar",
@@ -38,8 +104,27 @@
         "War horses were among the empire's most prized imports, traded through Portuguese-controlled ports."
       ],
       "qa": [
-        { "q": ["what", "sold", "market", "trade"], "a": "Eyewitnesses describe gems — rubies, diamonds, pearls — plus silk, cotton, spices, and above all imported war horses. Paes wrote that the bazaars were 'the best provided city in the world'." }
-      ]
+        {
+          "q": [
+            "what",
+            "sold",
+            "market",
+            "trade"
+          ],
+          "a": "Eyewitnesses describe gems — rubies, diamonds, pearls — plus silk, cotton, spices, and above all imported war horses. Paes wrote that the bazaars were 'the best provided city in the world'."
+        }
+      ],
+      "past": "The street is a river of people: Persian horse dealers, gem merchants weighing rubies in open trays, cloth sellers, sugarcane presses, and pilgrims. Two-storey merchant houses line the colonnades, their balconies crowded during festival processions.",
+      "quiz": {
+        "question": "Which import was most prized by the empire's army?",
+        "options": [
+          "Silk",
+          "War horses",
+          "Porcelain",
+          "Olive oil"
+        ],
+        "answer": 1
+      }
     },
     {
       "id": "hemakuta",
@@ -55,8 +140,26 @@
         "The hill is one of the best vantage points to understand the layout of the sacred centre."
       ],
       "qa": [
-        { "q": ["sunset", "view", "climb"], "a": "Yes — Hemakuta is Hampi's classic sunset spot. The climb is short and the view takes in the Virupaksha gopuram, the bazaar street, and the boulder landscape." }
-      ]
+        {
+          "q": [
+            "sunset",
+            "view",
+            "climb"
+          ],
+          "a": "Yes — Hemakuta is Hampi's classic sunset spot. The climb is short and the view takes in the Virupaksha gopuram, the bazaar street, and the boulder landscape."
+        }
+      ],
+      "past": "Dozens of small shrines stand whole on the bare granite, their stepped stone spires freshly whitewashed. Pilgrims climb barefoot at dawn; lamps flicker in the doorways at dusk overlooking the young imperial city below.",
+      "quiz": {
+        "question": "The name Hemakuta comes from 'hema', meaning…",
+        "options": [
+          "Stone",
+          "Gold",
+          "Moon",
+          "Fire"
+        ],
+        "answer": 1
+      }
     },
     {
       "id": "vittala",
@@ -72,9 +175,37 @@
         "The Stone Chariot appears on the Indian ₹50 banknote."
       ],
       "qa": [
-        { "q": ["chariot", "stone", "wheels"], "a": "The Stone Chariot is a shrine to Garuda, Vishnu's eagle mount, carved as a temple cart. Its granite wheels were once able to rotate on their axles; they've since been fixed to protect the monument." },
-        { "q": ["musical", "pillars", "sound", "sa", "re", "ga"], "a": "The main hall's slender granite colonnettes ring at different pitches when struck — supposedly mimicking instruments. Visitors are no longer allowed to tap them, to prevent damage." }
-      ]
+        {
+          "q": [
+            "chariot",
+            "stone",
+            "wheels"
+          ],
+          "a": "The Stone Chariot is a shrine to Garuda, Vishnu's eagle mount, carved as a temple cart. Its granite wheels were once able to rotate on their axles; they've since been fixed to protect the monument."
+        },
+        {
+          "q": [
+            "musical",
+            "pillars",
+            "sound",
+            "sa",
+            "re",
+            "ga"
+          ],
+          "a": "The main hall's slender granite colonnettes ring at different pitches when struck — supposedly mimicking instruments. Visitors are no longer allowed to tap them, to prevent damage."
+        }
+      ],
+      "past": "The courtyard blazes with colour — the chariot's stone wheels are turned by attendants during festivals, musicians strike the slender pillars of the great hall, and the whole complex smells of jasmine, camphor and fresh-cut banana leaf.",
+      "quiz": {
+        "question": "The Stone Chariot is a shrine dedicated to whom?",
+        "options": [
+          "Shiva",
+          "Ganesha",
+          "Garuda",
+          "Hanuman"
+        ],
+        "answer": 2
+      }
     },
     {
       "id": "lotus_mahal",
@@ -90,8 +221,26 @@
         "It is among the least damaged structures in the royal centre."
       ],
       "qa": [
-        { "q": ["why", "name", "lotus"], "a": "Its stacked, cusped archways and the domed tower rising in tiers are said to resemble an opening lotus bud — the name is modern, given for the shape." }
-      ]
+        {
+          "q": [
+            "why",
+            "name",
+            "lotus"
+          ],
+          "a": "Its stacked, cusped archways and the domed tower rising in tiers are said to resemble an opening lotus bud — the name is modern, given for the shape."
+        }
+      ],
+      "past": "The pavilion is plastered smooth and bright, cooled by water channels in its walls. Behind the high Zenana walls, the royal household takes the evening air here while guards watch from the corner towers.",
+      "quiz": {
+        "question": "The Lotus Mahal blends which two architectural traditions?",
+        "options": [
+          "Roman and Hindu",
+          "Hindu temple and Indo-Islamic",
+          "Chinese and Dravidian",
+          "Gothic and Mughal"
+        ],
+        "answer": 1
+      }
     },
     {
       "id": "elephant_stables",
@@ -107,8 +256,27 @@
         "It is one of the least damaged royal structures in Hampi."
       ],
       "qa": [
-        { "q": ["how", "many", "elephants", "chambers"], "a": "Eleven domed chambers, each large enough to house a royal elephant. The domes alternate between fluted, ribbed, and octagonal designs." }
-      ]
+        {
+          "q": [
+            "how",
+            "many",
+            "elephants",
+            "chambers"
+          ],
+          "a": "Eleven domed chambers, each large enough to house a royal elephant. The domes alternate between fluted, ribbed, and octagonal designs."
+        }
+      ],
+      "past": "Eleven state elephants stand chained under the domes, painted and brass-belled, their mahouts asleep in the lofts. On festival mornings they are armoured and led out in procession past cheering crowds.",
+      "quiz": {
+        "question": "How many domed chambers does the building have?",
+        "options": [
+          "Seven",
+          "Nine",
+          "Eleven",
+          "Thirteen"
+        ],
+        "answer": 2
+      }
     },
     {
       "id": "mahanavami",
@@ -124,8 +292,27 @@
         "Wooden superstructures once stood on top and have not survived."
       ],
       "qa": [
-        { "q": ["festival", "mahanavami", "dasara", "celebrated"], "a": "The Mahanavami — nine nights, ancestor of today's Dasara — was celebrated here with processions of elephants and cavalry, wrestling, music, and dance, all reviewed by the king from the top of this platform." }
-      ]
+        {
+          "q": [
+            "festival",
+            "mahanavami",
+            "dasara",
+            "celebrated"
+          ],
+          "a": "The Mahanavami — nine nights, ancestor of today's Dasara — was celebrated here with processions of elephants and cavalry, wrestling, music, and dance, all reviewed by the king from the top of this platform."
+        }
+      ],
+      "past": "Wooden pavilions sheathed in carved and gilded panels rise from the stone platform. Below, the parade ground churns with elephants, cavalry, wrestlers and dancers — the nine-night Mahanavami festival at full roar, the king enthroned above it all.",
+      "quiz": {
+        "question": "Which festival did the king preside over from this platform?",
+        "options": [
+          "Holi",
+          "Mahanavami (Dasara)",
+          "Pongal",
+          "Diwali"
+        ],
+        "answer": 1
+      }
     }
   ]
 }

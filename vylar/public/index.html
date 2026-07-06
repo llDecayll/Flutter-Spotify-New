@@ -21,6 +21,7 @@
       <button id="btn-live" class="primary">Start exploring (live AR)</button>
       <button id="btn-demo" class="secondary">Demo tour — no GPS needed</button>
       <p class="hint">Live AR needs camera, location, and motion permissions. The demo tour simulates a walk through the site.</p>
+      <p class="hint" id="xr-status"></p>
     </div>
   </section>
 
@@ -43,10 +44,19 @@
       </div>
     </header>
 
+    <div id="past-card" hidden>
+      <div class="past-year">c. 1520 CE</div>
+      <p id="past-text"></p>
+    </div>
+
     <footer id="controls">
       <button id="btn-narrate" title="Toggle voice narration">🔊</button>
-      <button id="btn-identify" title="Identify what the camera sees">Identify 📷</button>
-      <button id="btn-next" hidden>Walk to next site →</button>
+      <button id="btn-time" title="Time travel">🕰 1520</button>
+      <button id="btn-tour" title="Guided tour">🧭 Tour</button>
+      <button id="btn-hunt" title="Treasure hunt">🏺 Hunt</button>
+      <button id="btn-group" title="Group tour">👥</button>
+      <button id="btn-identify" title="Identify what the camera sees">📷</button>
+      <button id="btn-next" hidden>Next →</button>
     </footer>
   </section>
 
@@ -57,11 +67,60 @@
     <p id="sheet-era" class="era"></p>
     <p id="sheet-narration"></p>
     <ul id="sheet-facts"></ul>
+    <div id="sheet-characters">
+      <p class="row-label">Talk to someone who was here</p>
+      <div id="character-buttons"></div>
+    </div>
     <form id="ask-form">
       <input id="ask-input" type="text" placeholder="Ask Vylar anything about this place…" autocomplete="off" />
       <button type="submit">Ask</button>
     </form>
     <div id="ask-answer" hidden></div>
+  </section>
+
+  <!-- Character chat panel -->
+  <section id="chat" hidden>
+    <header>
+      <div>
+        <h3 id="chat-name"></h3>
+        <p id="chat-role"></p>
+      </div>
+      <button id="chat-close" aria-label="Close">✕</button>
+    </header>
+    <div id="chat-messages"></div>
+    <form id="chat-form">
+      <input id="chat-input" type="text" placeholder="Say something…" autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
+  </section>
+
+  <!-- Group tour dialog -->
+  <section id="group-dialog" hidden>
+    <h3>Group tour</h3>
+    <p class="hint">Explore together: see your group in AR and follow the leader's stops.</p>
+    <input id="group-name" type="text" placeholder="Your name" maxlength="24" autocomplete="off" />
+    <div class="group-actions">
+      <button id="group-create" class="primary">Create room</button>
+      <div class="join-row">
+        <input id="group-code" type="text" placeholder="CODE" maxlength="4" autocomplete="off" />
+        <button id="group-join" class="secondary">Join</button>
+      </div>
+    </div>
+    <div id="group-status" hidden>
+      <p>Room <strong id="group-code-label"></strong> · <span id="group-count"></span></p>
+      <button id="group-leave" class="secondary">Leave room</button>
+    </div>
+    <button id="group-close" class="secondary">Close</button>
+  </section>
+
+  <!-- Treasure hunt quiz -->
+  <section id="quiz" hidden>
+    <div class="quiz-card">
+      <p class="quiz-kicker">🏺 Relic challenge</p>
+      <h3 id="quiz-question"></h3>
+      <div id="quiz-options"></div>
+      <p id="quiz-result" hidden></p>
+    </div>
   </section>
 
   <!-- Identify result toast -->
