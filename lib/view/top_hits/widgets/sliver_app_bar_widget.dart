@@ -23,7 +23,6 @@ class SliverAppBarWidget extends StatelessWidget {
       pinned: true,
       titleSpacing: 16,
       centerTitle: true,
-      // title: const Text('Top Hit'),
       actions: [
         IconButton(
           onPressed: () {},
