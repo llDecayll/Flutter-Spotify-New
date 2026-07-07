@@ -1,0 +1,49 @@
+{
+  "monuments": [
+    {
+      "id": "taj_mahal",
+      "name": "Taj Mahal",
+      "place": "Agra, India",
+      "lat": 27.1751,
+      "lng": 78.0421,
+      "blurb": "An ivory-white marble mausoleum on the Yamuna, built by Shah Jahan for Mumtaz Mahal.",
+      "timeline": [
+        {
+          "year": -900,
+          "label": "c. 900 BCE",
+          "state": "absent",
+          "title": "Open riverbank",
+          "seed": "In 900 BCE there is no Taj Mahal — only the bank of the Yamuna river, reeds and grazing land. Nothing has been built here. Point your phone across the river and you would see water, sky, and open ground where the white marble will one day stand, more than two and a half thousand years in the future."
+        },
+        {
+          "year": 1631,
+          "label": "1631 CE",
+          "state": "absent",
+          "title": "Before construction",
+          "seed": "It is 1631. Mumtaz Mahal, the beloved wife of the Mughal emperor Shah Jahan, has just died. The riverbank is still empty, but a decision has been made that will fill it: a mausoleum grander than any before it. Surveyors are pacing out the ground you are standing on."
+        },
+        {
+          "year": 1643,
+          "label": "1643 CE",
+          "state": "construction",
+          "title": "Under construction",
+          "seed": "By 1643 the great platform is laid and the central dome is rising. Twenty thousand workers, a thousand elephants, and marble hauled from Makrana crowd the site. Scaffolding wraps the drum of the dome; the four minarets are half their final height. The building you are looking at is a construction site, not yet white and perfect."
+        },
+        {
+          "year": 1653,
+          "label": "1653 CE",
+          "state": "complete",
+          "title": "Completed",
+          "seed": "In 1653, after roughly twenty-two years, the Taj Mahal is finished. The white marble dome, the four minarets leaning almost imperceptibly outward, the pietra dura inlay of flowers in the marble — all complete. This is the monument at the moment of its perfection, the tomb of Mumtaz Mahal and, later, of Shah Jahan himself."
+        },
+        {
+          "year": 2024,
+          "label": "Today",
+          "state": "complete",
+          "title": "Present day",
+          "seed": "Today the Taj Mahal is a UNESCO World Heritage Site visited by millions each year. The marble has weathered and been cleaned many times; the gardens are formal lawns; the river behind it runs lower than it did. But the silhouette is unchanged from 1653 — the same dome, the same four minarets, standing exactly where you are pointing your phone."
+        }
+      ]
+    }
+  ]
+}

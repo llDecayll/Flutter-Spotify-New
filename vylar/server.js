@@ -17,6 +17,14 @@ const site = JSON.parse(
   await readFile(path.join(PUBLIC_DIR, "data", "hampi.json"), "utf8"),
 );
 
+// Monument registry for the Time Machine (map + timeline AR). Seeded from the
+// static file; community-uploaded monuments are added in-memory at runtime via
+// POST /api/monuments (the "someone scanned and uploaded a monument" pipeline).
+const monumentSeed = JSON.parse(
+  await readFile(path.join(PUBLIC_DIR, "data", "monuments.json"), "utf8"),
+);
+const monuments = new Map(monumentSeed.monuments.map((m) => [m.id, m]));
+
 const MIME = {
   ".html": "text/html; charset=utf-8",
   ".css": "text/css; charset=utf-8",
@@ -25,6 +33,8 @@ const MIME = {
   ".svg": "image/svg+xml",
   ".png": "image/png",
   ".ico": "image/x-icon",
+  ".glb": "model/gltf-binary",
+  ".gltf": "model/gltf+json",
 };
 
 let client = null;
@@ -265,6 +275,87 @@ async function handleRoom(req, res, pathname) {
   return json(res, 405, { error: "unsupported" });
 }
 
+// GET  /api/monuments        -> registry (map markers + timelines)
+// POST /api/monuments        -> register/upload a monument with per-era 3D refs
+async function handleMonuments(req, res) {
+  if (req.method === "GET") {
+    return json(res, 200, { monuments: [...monuments.values()] });
+  }
+  if (req.method === "POST") {
+    const body = JSON.parse((await readBody(req)).toString("utf8"));
+    const name = String(body.name || "").slice(0, 120).trim();
+    const lat = Number(body.lat);
+    const lng = Number(body.lng);
+    if (!name || !Number.isFinite(lat) || !Number.isFinite(lng) ||
+        lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+      return json(res, 400, { error: "name, lat (-90..90), lng (-180..180) required" });
+    }
+    if (!Array.isArray(body.timeline) || body.timeline.length === 0) {
+      return json(res, 400, { error: "timeline[] with at least one era required" });
+    }
+    const timeline = body.timeline.slice(0, 12).map((e) => ({
+      year: Number(e.year) || 0,
+      label: String(e.label || "").slice(0, 40),
+      state: ["absent", "construction", "complete"].includes(e.state) ? e.state : "complete",
+      title: String(e.title || "").slice(0, 80),
+      seed: String(e.seed || "").slice(0, 1200),
+      // 3D model reference for this era (glTF/GLB URL from the uploader's scan).
+      modelUrl: typeof e.modelUrl === "string" ? e.modelUrl.slice(0, 500) : null,
+    }));
+    const id = String(body.id || name.toLowerCase().replace(/[^a-z0-9]+/g, "_"))
+      .slice(0, 60).replace(/^_+|_+$/g, "") || `m_${Date.now()}`;
+    const monument = {
+      id,
+      name,
+      place: String(body.place || "").slice(0, 120),
+      lat,
+      lng,
+      blurb: String(body.blurb || "").slice(0, 400),
+      timeline: timeline.sort((a, b) => a.year - b.year),
+      uploaded: true,
+    };
+    monuments.set(id, monument);
+    return json(res, 200, { ok: true, monument });
+  }
+  return json(res, 405, { error: "unsupported" });
+}
+
+// POST /api/timeline -> Fable 5 narration for one monument at one era.
+async function handleTimeline(req, res) {
+  const body = JSON.parse((await readBody(req)).toString("utf8"));
+  const monument = monuments.get(body.monumentId);
+  if (!monument) return json(res, 400, { error: "unknown monument" });
+  const era = monument.timeline.find((e) => String(e.year) === String(body.year));
+  if (!era) return json(res, 400, { error: "unknown era" });
+
+  try {
+    const response = await anthropic().messages.create({
+      model: MODEL,
+      max_tokens: 640,
+      system:
+        "You are Vylar, a time-travel heritage guide. The visitor is standing at a real location, " +
+        "looking at an AR reconstruction of it as it was in a specific year. Narrate what they are seeing " +
+        "in that year in 60-90 vivid words, present tense, second person ('you see…'). " +
+        "If the monument did not exist yet in that year, say so plainly and describe the empty place instead. " +
+        "Ground it in established history; flag anything uncertain. No preamble.",
+      messages: [
+        {
+          role: "user",
+          content:
+            `Monument: ${monument.name} (${monument.place}). ` +
+            `Year: ${era.label}. State: ${era.state} (absent = not built yet). ` +
+            `Reference notes: ${era.seed}`,
+        },
+      ],
+    });
+    const text = extractText(response);
+    if (!text) throw new Error("empty or refused response");
+    return json(res, 200, { narration: text, source: "ai" });
+  } catch (err) {
+    return json(res, 200, { narration: era.seed, source: "offline" });
+  }
+}
+
 async function handleIdentify(req, res) {
   const body = JSON.parse((await readBody(req)).toString("utf8"));
   const match = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/.exec(body.image || "");
@@ -324,6 +415,8 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "POST" && pathname === "/api/ask") return await handleAsk(req, res);
     if (req.method === "POST" && pathname === "/api/identify") return await handleIdentify(req, res);
     if (req.method === "POST" && pathname === "/api/character") return await handleCharacter(req, res);
+    if (pathname === "/api/monuments") return await handleMonuments(req, res);
+    if (req.method === "POST" && pathname === "/api/timeline") return await handleTimeline(req, res);
     if (pathname.startsWith("/api/rooms")) return await handleRoom(req, res, pathname);
     if (req.method === "GET") return serveStatic(req, res, pathname);
     res.writeHead(405).end();

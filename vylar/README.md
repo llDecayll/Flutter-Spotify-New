@@ -84,6 +84,22 @@ Design decisions worth knowing:
 - **Site packs are data.** Everything Hampi-specific lives in one JSON file, so
   the same app serves any site.
 
+## Time Machine (timeline-AR core) — `/time.html`
+
+The scenario "get alerted to a nearby monument → open a map → travel its
+timeline in AR, including before it was built, with narration, looking around
+while it stays anchored" is implemented as a runnable slice: geofenced nearby
+alert → world map with blinking markers → a Three.js 3D reconstruction you scrub
+through eras (with an `absent` "not built yet" state) → per-era **Claude Fable
+5** narration → device-orientation look-around → a `POST /api/monuments` upload
+pipeline for community-scanned monuments. Full scope, stand-ins, and the native
+path are documented in `docs/TIMEMACHINE.md`. Verified end-to-end (WebGL frames
+compared across eras) in `scratchpad`-style Playwright runs.
+
+The two things it deliberately does **not** do — real uploaded photogrammetry
+meshes, and 6DoF walk-around VPS anchoring — are the native-client + content
+work that no web build can do; everything that plugs into them is built.
+
 ## Phase 2 & 3 features (also in this prototype)
 
 | Feature | Implementation |

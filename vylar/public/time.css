@@ -1,0 +1,112 @@
+/* Time Machine styles (layered on styles.css) */
+
+#tm-notify, #tm-map, #tm-view { position: fixed; inset: 0; }
+
+/* Nearby notification */
+#tm-notify {
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: max(24px, env(safe-area-inset-top));
+  background: radial-gradient(120% 60% at 50% 0%, #2a2015 0%, var(--bg) 70%);
+}
+.notify-card {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--panel);
+  border: 1px solid rgba(217,164,65,0.4);
+  border-radius: 16px;
+  padding: 14px 16px;
+  max-width: 440px; width: calc(100% - 28px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  animation: slidein 0.5s ease;
+}
+@keyframes slidein { from { transform: translateY(-40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.notify-icon { font-size: 26px; }
+.notify-body { flex: 1; }
+.notify-body strong { color: var(--gold); font-size: 15px; }
+.notify-body p { color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+/* Map */
+#tm-map { display: flex; flex-direction: column; padding: 0 0 20px; }
+.tm-head { padding: max(16px, env(safe-area-inset-top)) 18px 8px; }
+.tm-head h2 { color: var(--gold); font-size: 20px; }
+#map-canvas {
+  position: relative;
+  flex: 1;
+  margin: 8px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(217,164,65,0.25);
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, #14212b, #0f1a14),
+    repeating-linear-gradient(0deg, transparent 0 24px, rgba(255,255,255,0.03) 24px 25px),
+    repeating-linear-gradient(90deg, transparent 0 24px, rgba(255,255,255,0.03) 24px 25px);
+}
+.tm-hint { text-align: center; color: var(--muted); font-size: 12px; }
+.map-marker {
+  position: absolute; transform: translate(-50%, -50%);
+  background: none; display: flex; align-items: center; gap: 6px;
+}
+.map-marker .dot {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 0 rgba(217,164,65,0.6);
+  animation: blink 1.4s infinite;
+}
+@keyframes blink {
+  0% { box-shadow: 0 0 0 0 rgba(217,164,65,0.6); }
+  70% { box-shadow: 0 0 0 16px rgba(217,164,65,0); }
+  100% { box-shadow: 0 0 0 0 rgba(217,164,65,0); }
+}
+.map-marker .tag {
+  background: var(--panel); border: 1px solid rgba(217,164,65,0.35);
+  border-radius: 999px; padding: 4px 9px; font-size: 12px; white-space: nowrap; color: var(--text);
+}
+.map-you {
+  position: absolute; transform: translate(-50%, -50%);
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #6fb7ff; border: 2px solid #fff;
+  box-shadow: 0 0 12px rgba(111,183,255,0.9);
+}
+
+/* Time Machine view */
+#tm-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+#tm-hud {
+  position: absolute; top: 0; left: 0; right: 0;
+  display: flex; align-items: center; gap: 10px;
+  padding: max(12px, env(safe-area-inset-top)) 14px 12px;
+}
+#tm-hud #tm-title { flex: 1; text-align: center; font-weight: 700; text-shadow: 0 1px 4px #000; }
+#tm-hud button {
+  background: var(--panel); border: 1px solid rgba(217,164,65,0.35);
+  color: var(--text); padding: 8px 12px; font-size: 14px;
+}
+#tm-absent {
+  position: absolute; top: 64px; left: 14px; right: 14px;
+  background: rgba(20,17,13,0.9); border: 1px solid var(--gold);
+  border-radius: 12px; padding: 10px 12px; font-size: 13px; color: var(--text);
+}
+#tm-narration {
+  position: absolute; left: 14px; right: 14px; bottom: 168px;
+  background: rgba(11,10,8,0.78); border-left: 3px solid var(--gold);
+  border-radius: 10px; padding: 11px 13px; font-size: 14px; line-height: 1.5;
+  max-height: 34vh; overflow-y: auto;
+}
+#tm-narration.loading { color: var(--muted); font-style: italic; }
+#tm-narration .src { display: block; margin-top: 6px; font-size: 11px; color: var(--muted); }
+
+#tm-timeline {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(transparent, rgba(11,10,8,0.85) 30%);
+  padding: 20px 18px calc(16px + env(safe-area-inset-bottom));
+}
+#tm-era-label { text-align: center; color: var(--gold); font-weight: 700; margin-bottom: 6px; }
+#tm-slider { width: 100%; accent-color: var(--gold); }
+#tm-ticks { display: flex; justify-content: space-between; margin-top: 4px; }
+#tm-ticks span { font-size: 10.5px; color: var(--muted); }
+.tm-look-hint { text-align: center; color: var(--muted); font-size: 11px; margin-top: 8px; }
+
+#tm-exit {
+  position: fixed; left: 12px; bottom: 10px; z-index: 60;
+  color: var(--muted); font-size: 11px; text-decoration: none;
+  background: rgba(11,10,8,0.6); padding: 4px 8px; border-radius: 8px;
+}
+#tm-view ~ #tm-exit { display: none; }

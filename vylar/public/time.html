@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#0b0a08" />
+  <title>Vylar Time Machine</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%23d9a441'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='16' font-weight='bold' fill='%23241a08'%3E%E2%8C%9B%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/time.css" />
+</head>
+<body>
+  <!-- 1. Nearby notification (geofence trigger) -->
+  <section id="tm-notify" hidden>
+    <div class="notify-card">
+      <div class="notify-icon">⌛</div>
+      <div class="notify-body">
+        <strong id="notify-title">Historical place nearby</strong>
+        <p id="notify-sub"></p>
+      </div>
+      <button id="notify-open" class="primary">View on map</button>
+    </div>
+  </section>
+
+  <!-- 2. World map -->
+  <section id="tm-map" hidden>
+    <header class="tm-head"><h2>Nearby monuments</h2></header>
+    <div id="map-canvas"></div>
+    <p class="tm-hint">Tap a blinking marker to open its timeline.</p>
+  </section>
+
+  <!-- 3. Time Machine AR view -->
+  <section id="tm-view" hidden>
+    <canvas id="tm-canvas"></canvas>
+
+    <header id="tm-hud">
+      <button id="tm-back" aria-label="Back to map">‹ Map</button>
+      <div id="tm-title"></div>
+      <button id="tm-narrate" title="Voice narration">🔊</button>
+    </header>
+
+    <div id="tm-absent" hidden>This place had no monument yet in this year — you're looking at the open site.</div>
+
+    <div id="tm-narration"></div>
+
+    <footer id="tm-timeline">
+      <div id="tm-era-label"></div>
+      <input id="tm-slider" type="range" min="0" max="0" step="1" value="0" />
+      <div id="tm-ticks"></div>
+      <p class="tm-look-hint">Move your phone (or drag) to look around · the monument stays anchored.</p>
+    </footer>
+  </section>
+
+  <a id="tm-exit" href="/">← Vylar AR guide</a>
+
+  <script type="module" src="/js/timeapp.js"></script>
+</body>
+</html>
