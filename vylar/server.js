@@ -11,7 +11,7 @@ import Anthropic from "@anthropic-ai/sdk";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(__dirname, "public");
 const PORT = process.env.PORT || 8787;
-const MODEL = process.env.VYLAR_MODEL || "claude-opus-4-8";
+const MODEL = process.env.VYLAR_MODEL || "claude-fable-5";
 
 const site = JSON.parse(
   await readFile(path.join(PUBLIC_DIR, "data", "hampi.json"), "utf8"),
@@ -31,6 +31,19 @@ let client = null;
 function anthropic() {
   if (!client) client = new Anthropic();
   return client;
+}
+
+// Fable 5 can decline a request with HTTP 200 + stop_reason "refusal" and an
+// empty content array, so treat a refusal (or empty text) as "no answer" and
+// let the caller fall back to the offline site pack.
+function extractText(response) {
+  if (response.stop_reason === "refusal") return null;
+  const text = response.content
+    .filter((b) => b.type === "text")
+    .map((b) => b.text)
+    .join("\n")
+    .trim();
+  return text || null;
 }
 
 function json(res, status, body) {
@@ -108,10 +121,8 @@ async function handleAsk(req, res) {
         },
       ],
     });
-    const text = response.content
-      .filter((b) => b.type === "text")
-      .map((b) => b.text)
-      .join("\n");
+    const text = extractText(response);
+    if (!text) throw new Error("empty or refused response");
     return json(res, 200, { answer: text, source: "ai" });
   } catch (err) {
     return json(res, 200, {
@@ -155,10 +166,8 @@ async function handleCharacter(req, res) {
         },
       ],
     });
-    const text = response.content
-      .filter((b) => b.type === "text")
-      .map((b) => b.text)
-      .join("\n");
+    const text = extractText(response);
+    if (!text) throw new Error("empty or refused response");
     return json(res, 200, { reply: text, source: "ai" });
   } catch (err) {
     return json(res, 200, { reply: character.offline, source: "offline" });
@@ -283,10 +292,8 @@ async function handleIdentify(req, res) {
         },
       ],
     });
-    const text = response.content
-      .filter((b) => b.type === "text")
-      .map((b) => b.text)
-      .join("\n");
+    const text = extractText(response);
+    if (!text) throw new Error("empty or refused response");
     return json(res, 200, { result: text, source: "ai" });
   } catch (err) {
     return json(res, 200, {

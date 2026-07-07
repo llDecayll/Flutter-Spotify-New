@@ -33,6 +33,32 @@ npm start                              # http://localhost:8787
 - Without an Anthropic API key the app still works: Ask Vylar answers from the
   offline site pack, and the scanner reports itself unavailable.
 
+### Model
+
+The AI guide, characters, and scanner run on **Claude Fable 5**
+(`claude-fable-5`, override with `VYLAR_MODEL`). Fable 5's request surface is
+handled directly: thinking is always on (no `thinking` param sent), and a
+safety **refusal** (HTTP 200 with `stop_reason: "refusal"` and empty content) is
+detected and routed to the offline fallback instead of returning a blank answer.
+Note Fable 5 requires 30-day data retention on the org; for production you'd
+also add the server-side `fallbacks` parameter to auto-retry refusals on Opus.
+
+### Battery & thermal behavior
+
+Sustained AR is the classic way to cook a phone, so the render path is tuned to
+stay cool:
+
+- **~15 fps render cap** on the AR hotspot layout (not the display's 60 fps) —
+  GPS and compass change far slower than that, so this ~4× cut in per-frame work
+  is the main lever. Verified at ~15 fps in `scratchpad/perf.mjs`.
+- **Change-detected DOM writes**: hotspot `left/top/scale/z`, distance labels,
+  and the banner are only written when the value actually changes (positions
+  rounded to whole pixels), so a static scene does ~0 style writes/paints.
+- **Full pause when backgrounded**: on `visibilitychange` the render loop stops
+  and speech/camera are hushed — a hidden tab draws no power.
+- **Skips work under overlays**: while a full-screen panel (chat, quiz, group
+  dialog) covers the camera, the hotspot re-layout is skipped entirely.
+
 ## Architecture
 
 ```

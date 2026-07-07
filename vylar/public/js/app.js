@@ -22,7 +22,17 @@ const state = {
   pastMode: false,
   tour: { active: false, index: -1 },
   lastFrame: performance.now(),
+  lastRender: 0,
+  panoramaEl: null,
+  banner: { title: "", sub: "", pan: null },
+  running: false,
 };
+
+// AR hotspots track GPS + compass, which change far slower than the display's
+// refresh rate. Capping the heavy re-layout to ~15 fps (instead of 60) roughly
+// quarters the per-frame CPU/GPU work — the single biggest lever against the
+// device heating up during a session.
+const RENDER_INTERVAL_MS = 66;
 
 async function init() {
   state.site = await (await fetch("/data/hampi.json")).json();
@@ -99,7 +109,10 @@ async function start(mode) {
     },
   });
 
+  state.panoramaEl = document.querySelector("#demo-scene .panorama");
   bindControls();
+  bindPowerSaving();
+  state.running = true;
   requestAnimationFrame(frame);
 
   $("banner-title").textContent = state.site.name;
@@ -109,21 +122,56 @@ async function start(mode) {
   state.narrator.speak(`Welcome to ${state.site.name}. ${state.site.intro.split(". ")[0]}.`);
 }
 
+// A full-screen panel is over the AR view — there's nothing to see behind it,
+// so skip the hotspot re-layout entirely until it closes.
+function arCovered() {
+  return !$("chat").hidden || !$("quiz").hidden || !$("group-dialog").hidden;
+}
+
+let renderCount = 0; // exposed for perf testing
 function frame(now) {
+  if (!state.running) return; // loop stopped (tab hidden)
+  requestAnimationFrame(frame);
+
+  // Throttle to the render interval — this is what keeps the loop from pinning
+  // a core at 60 fps.
+  if (now - state.lastRender < RENDER_INTERVAL_MS) return;
   const dt = now - state.lastFrame;
   state.lastFrame = now;
+  state.lastRender = now;
+
   const s = state.sensors;
   s.tick?.(dt);
+  if (arCovered() || !s.position) return;
 
-  if (s.position) {
-    state.ar.render(state.site.pois, s.position, s.heading, s.pitch, state.members);
-    updateBanner();
-    if (s.isDemo) {
-      document.querySelector("#demo-scene .panorama")
-        ?.style.setProperty("--pan", `${-(s.heading / 360) * 1800}px`);
+  state.ar.render(state.site.pois, s.position, s.heading, s.pitch, state.members);
+  updateBanner();
+  if (s.isDemo) {
+    const pan = `${(-(s.heading / 360) * 1800).toFixed(1)}px`;
+    if (pan !== state.banner.pan) {
+      state.panoramaEl?.style.setProperty("--pan", pan);
+      state.banner.pan = pan;
     }
   }
-  requestAnimationFrame(frame);
+  renderCount++;
+  window.__vylarRenderCount = renderCount;
+}
+
+// Stop all per-frame work when the page isn't visible, and hush audio/camera
+// so a backgrounded tab draws no power.
+function bindPowerSaving() {
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      state.running = false;
+      state.narrator.stopSpeaking();
+      $("camera").pause?.();
+    } else if (!state.running) {
+      state.running = true;
+      state.lastFrame = performance.now();
+      $("camera").play?.().catch(() => {});
+      requestAnimationFrame(frame);
+    }
+  });
 }
 
 function updateBanner() {
@@ -140,9 +188,10 @@ function updateBanner() {
     ? `Stop ${state.tour.index + 1}/${state.site.pois.length} · `
     : "";
 
+  let title, sub;
   if (nearestDist < 80) {
-    $("banner-title").textContent = tourPrefix + nearest.name;
-    $("banner-sub").textContent = "You're here — tap the marker to explore";
+    title = tourPrefix + nearest.name;
+    sub = "You're here — tap the marker to explore";
     if (state.announcedPoi !== nearest.id) {
       state.announcedPoi = nearest.id;
       state.narrator.speak(`You've arrived at ${nearest.name}. ${nearest.short}`);
@@ -150,10 +199,13 @@ function updateBanner() {
     }
   } else {
     const brg = bearingDeg(s.position, nearest);
-    $("banner-title").textContent = tourPrefix + state.site.name;
-    $("banner-sub").textContent =
-      `Nearest: ${nearest.name} · ${formatDistance(nearestDist)} ${compassPoint(brg)}`;
+    title = tourPrefix + state.site.name;
+    sub = `Nearest: ${nearest.name} · ${formatDistance(nearestDist)} ${compassPoint(brg)}`;
   }
+
+  // Only touch the DOM when the text actually changes.
+  if (title !== state.banner.title) { $("banner-title").textContent = title; state.banner.title = title; }
+  if (sub !== state.banner.sub) { $("banner-sub").textContent = sub; state.banner.sub = sub; }
 
   if (state.pastMode) updatePastCard(nearest, nearestDist);
 }

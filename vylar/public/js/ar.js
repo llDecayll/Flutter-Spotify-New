@@ -23,11 +23,15 @@ export class ARView {
       el.className = isMember ? "hotspot member" : "hotspot";
       el.innerHTML =
         `<div class="card"><div class="name"></div><div class="dist"></div></div><div class="pin"></div>`;
+      el._nameEl = el.querySelector(".name");
+      el._distEl = el.querySelector(".dist");
+      el._cardEl = el.querySelector(".card");
+      el._prev = {}; // last-applied values, to skip redundant DOM writes
       if (!isMember) el.addEventListener("click", () => this.onTapPoi(target));
       this.layer.appendChild(el);
       this._els.set(key, el);
     }
-    el.querySelector(".name").textContent = label;
+    if (el._prev.label !== label) { el._nameEl.textContent = label; el._prev.label = label; }
     return el;
   }
 
@@ -40,12 +44,16 @@ export class ARView {
     const place = (key, label, target, isMember) => {
       liveKeys.add(key);
       const el = this._elFor(key, label, target, isMember);
+      const p = el._prev;
       const dist = distanceM(position, target);
-      if (dist > MAX_RANGE_M) { el.style.display = "none"; return; }
+      const hide = () => {
+        if (p.display !== "none") { el.style.display = "none"; p.display = "none"; }
+      };
+      if (dist > MAX_RANGE_M) { hide(); return; }
 
       const rel = bearingDelta(heading, bearingDeg(position, target));
       if (Math.abs(rel) > FOV / 2 + 8) {
-        el.style.display = "none";
+        hide();
         if (!isMember) {
           const cand = { label, dist };
           if (rel < 0) { if (!offLeft || dist < offLeft.dist) offLeft = cand; }
@@ -59,14 +67,20 @@ export class ARView {
       const depth = Math.min(1, dist / MAX_RANGE_M);
       const y = h * (0.62 - 0.22 * depth) + pitch * (h / 70);
       const scale = Math.max(0.65, 1.25 - depth * 0.9);
+      const z = 1000 - Math.round(depth * 999);
+      const distLabel = formatDistance(dist);
+      const near = !isMember && dist < 80;
 
-      el.style.display = "";
-      el.style.left = `${x}px`;
-      el.style.top = `${y}px`;
-      el.style.zIndex = String(1000 - Math.round(depth * 999));
-      el.querySelector(".card").style.transform = `scale(${scale})`;
-      el.querySelector(".dist").textContent = formatDistance(dist);
-      el.classList.toggle("near", !isMember && dist < 80);
+      // Write only what changed; round positions to whole pixels so sub-pixel
+      // jitter from sensor noise doesn't trigger a paint every frame.
+      if (p.display !== "") { el.style.display = ""; p.display = ""; }
+      const xr = Math.round(x), yr = Math.round(y);
+      if (xr !== p.x) { el.style.left = `${xr}px`; p.x = xr; }
+      if (yr !== p.y) { el.style.top = `${yr}px`; p.y = yr; }
+      if (z !== p.z) { el.style.zIndex = String(z); p.z = z; }
+      if (scale.toFixed(2) !== p.scale) { el._cardEl.style.transform = `scale(${scale.toFixed(2)})`; p.scale = scale.toFixed(2); }
+      if (distLabel !== p.distLabel) { el._distEl.textContent = distLabel; p.distLabel = distLabel; }
+      if (near !== p.near) { el.classList.toggle("near", near); p.near = near; }
     };
 
     for (const poi of pois) place(poi.id, poi.name, poi, false);
